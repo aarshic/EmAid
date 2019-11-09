@@ -6,7 +6,7 @@ var router = express.Router();
 //for reading data
 router.get('/', function (req, res, next) {
   console.log("router");
-  return res.sendFile(path.join(__dirname + '/template/signup.html'));
+  return res.sendFile(path.join(__dirname + '/template'));
 });
 
 //for updating data
@@ -38,20 +38,18 @@ router.post('/signup', function (req, res, next){
     //     return res.redirect('../template/login.html');
     //   }
     // });
-    exports.User=function(rq,rs){
-      console.log("Export");
-      let user=new userData({
-        email: req.body.email,
-        username: req.body.username,
-        password: req.body.password
-      });
-      user.save(function(err){
-        if(err){
-          return next(err);
-        }
-        res.send("User Created");
-      })
-    }
+    let user=new User({
+      email: req.body.email,
+      username: req.body.username,
+      password: req.body.password
+    });
+    user.save(function(err){
+      if(err){
+        console.log(err);
+        return next(err);
+      }
+      res.send("User Created");
+    })
   } 
   // else if(req.body.logemail && req.body.logpassword){
   //   User.authenticate(req.body.logemail, req.body.logpassword, function (error, user){
@@ -106,6 +104,30 @@ router.get('/logout', function (req, res, next) {
       }
     });
   }
+});
+
+
+var http = require('http');
+var static = require('node-static');
+var app = http.createServer(handler);
+var io = require('socket.io').listen(app);
+
+var files = new static.Server('./public');
+
+// serve files on request
+function handler(request, response) {
+	request.addListener('end', function() {
+		files.serve(request, response);
+	});
+}
+
+// listen for incoming connections from client
+io.sockets.on('connection', function (socket){
+  // start listening for coords
+  socket.on('send:coords', function (data){
+  	// broadcast your coordinates to everyone except you
+  	socket.broadcast.emit('load:coords', data);
+  });
 });
 
 module.exports=router;
