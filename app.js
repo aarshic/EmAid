@@ -27,10 +27,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // serve static files from template
-app.use(express.static(__dirname + '/templateLogReg'));
+app.use(express.static(__dirname + '/template'));
 
 // include routes
-var routes = require('./routes/router');
+var routes=require('./routes/router');
 app.use('/', routes);
 
 // catch 404 and forward to error handler
