@@ -9,7 +9,7 @@ router.get('/', function (req, res, next) {
 });
 
 //for updating data
-router.post('/signup', function (req, res, next) {
+router.get('/signup', function (req, res, next){
   if (req.body.password!==req.body.passwordConf) {
     var err=new Error('Passwords do not match.');
     err.status=400;
@@ -27,24 +27,24 @@ router.post('/signup', function (req, res, next) {
         return next(error);
       } else{
         req.session.userId = user._id;
-        console.log("Created");
-        return res.redirect('/template/login.html');
+        // console.log("Created");
+        return res.redirect('../template/login.html');
       }
     });
   } 
-  else if(req.body.logemail && req.body.logpassword){
-    User.authenticate(req.body.logemail, req.body.logpassword, function (error, user){
-      if(error || !user){
-        var err=new Error('Wrong email or password.');
-        err.status=401;
-        return next(err);
-      } 
-      else{
-        req.session.userId = user._id;
-        return res.redirect('/template/login.html');
-      }
-    });
-  } 
+  // else if(req.body.logemail && req.body.logpassword){
+  //   User.authenticate(req.body.logemail, req.body.logpassword, function (error, user){
+  //     if(error || !user){
+  //       var err=new Error('Wrong email or password.');
+  //       err.status=401;
+  //       return next(err);
+  //     } 
+  //     else{
+  //       req.session.userId = user._id;
+  //       return res.redirect('/template/login.html');
+  //     }
+  //   });
+  // } 
   else {
     var err=new Error('All fields required.');
     err.status=400;
@@ -64,11 +64,11 @@ router.get('/login', function(req, res, next){
         console.log(res, req);
         if(user===null){
           var err=new Error('Not authorized! Go back!');
-          err.status=400;
+          err.status=401;
           return next(err);
-        } 
+        }
         else{
-          return res.redirect('/template/index.html');
+          return res.redirect('../template/index.html');
         }
       }
     });
@@ -79,9 +79,9 @@ router.get('/logout', function (req, res, next) {
     req.session.destroy(function (err) {
       if(err){
         return next(err);
-      } 
+      }
       else{
-        return res.redirect('/template/login.html');
+        return res.redirect('../template/login.html');
       }
     });
   }
