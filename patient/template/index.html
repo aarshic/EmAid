@@ -20,7 +20,6 @@
 				font-size: 1.1em;
 				font-weight: 300;
 				line-height: 1.7em;
-				color: #999;
 			}
 			a, a:hover, a:focus {
 				color: inherit;
@@ -78,7 +77,7 @@
 			}
 			#dismiss:hover {
 				background: #fff;
-				color: #black;
+				color: black;
 			}
 			.overlay {
 				display: none;
@@ -178,7 +177,7 @@
 				</div>
 
 				<div class="sidebar-header">
-					<h5>Bootstrap Sidebar</h5>
+					
 				</div>
 
 				<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
@@ -203,27 +202,24 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
 		<script>
 			$(document).ready(function() {
-						$("#sidebar").mCustomScrollbar({
-							// Scrolling only necessary for long / extended menus..
-							// its not really needed in this short example...
-							theme: "minimal"
-						});
-						$('#dismiss, .overlay').on('click', function() {
-							$('#sidebar').removeClass('active');
-							$('.overlay').removeClass('active');
-						});
-						$('#sidebarCollapse').on('click', function() {
-							$('#sidebar').addClass('active');
-							$('.overlay').addClass('active');
-							$('.collapse.in').toggleClass('in');
-							$('a[aria-expanded=true]').attr('aria-expanded', 'false');
-						});
-						$('div.nav-pills a.nav-link').on('click', function(){
-							// close sidebar drawer menu upon a selection
-							$('#sidebar').removeClass('active');
-							$('.overlay').removeClass('active');
-						})
-					});
+				$("#sidebar").mCustomScrollbar({
+					theme: "minimal"
+				});
+				$('#dismiss, .overlay').on('click', function() {
+					$('#sidebar').removeClass('active');
+					$('.overlay').removeClass('active');
+				});
+				$('#sidebarCollapse').on('click', function() {
+					$('#sidebar').addClass('active');
+					$('.overlay').addClass('active');
+					$('.collapse.in').toggleClass('in');
+					$('a[aria-expanded=true]').attr('aria-expanded', 'false');
+				});
+				$('div.nav-pills a.nav-link').on('click', function(){
+					$('#sidebar').removeClass('active');
+					$('.overlay').removeClass('active');
+				})
+			});
 		</script>
     </body>
 </html>
