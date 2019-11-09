@@ -5,29 +5,36 @@ var router = express.Router();
 
 //for reading data
 router.get('/', function (req, res, next) {
+  console.log("router");
   return res.sendFile(path.join(__dirname + '/template/signup.html'));
 });
 
 //for updating data
-router.get('/signup', function (req, res, next){
+router.post('/signup', function (req, res, next){
+  console.log(req.body);
   if (req.body.password!==req.body.passwordConf) {
+    console.log("inside");
     var err=new Error('Passwords do not match.');
     err.status=400;
     res.send("passwords don't match");
     return next(err);
   }
   if (req.body.email && req.body.username && req.body.password && req.body.passwordConf){
+    console.log("inside1");
     var userData={
       email: req.body.email,
       username: req.body.username,
-      password: req.body.password
+      password: req.body.password,
     }
-    User.create(userData, function (error, user){
-      if (error){
-        return next(error);
-      } else{
+    User.create(userData, function(err, user){
+      console.log("in");
+      if(err){
+        console.log(err);
+        return next(err);
+      }
+      else{
+        console.log("Created");
         req.session.userId = user._id;
-        // console.log("Created");
         return res.redirect('../template/login.html');
       }
     });
