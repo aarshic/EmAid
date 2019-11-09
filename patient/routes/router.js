@@ -21,23 +21,37 @@ router.post('/signup', function (req, res, next){
   }
   if (req.body.email && req.body.username && req.body.password && req.body.passwordConf){
     console.log("inside1");
-    var userData={
-      email: req.body.email,
-      username: req.body.username,
-      password: req.body.password,
+    // var userData={
+    //   email: req.body.email,
+    //   username: req.body.username,
+    //   password: req.body.password,
+    // }
+    // User.create(userData, function(err, user){
+    //   console.log("in");
+    //   if(err){
+    //     console.log(err);
+    //     return next(err);
+    //   }
+    //   else{
+    //     console.log("Created");
+    //     req.session.userId = user._id;
+    //     return res.redirect('../template/login.html');
+    //   }
+    // });
+    exports.User=function(rq,rs){
+      console.log("Export");
+      let user=new userData({
+        email: req.body.email,
+        username: req.body.username,
+        password: req.body.password
+      });
+      user.save(function(err){
+        if(err){
+          return next(err);
+        }
+        res.send("User Created");
+      })
     }
-    User.create(userData, function(err, user){
-      console.log("in");
-      if(err){
-        console.log(err);
-        return next(err);
-      }
-      else{
-        console.log("Created");
-        req.session.userId = user._id;
-        return res.redirect('../template/login.html');
-      }
-    });
   } 
   // else if(req.body.logemail && req.body.logpassword){
   //   User.authenticate(req.body.logemail, req.body.logpassword, function (error, user){
