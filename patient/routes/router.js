@@ -3,13 +3,11 @@ var User = require('../models/user');
 
 var router = express.Router();
 
-//for reading data
 router.get('/', function (req, res, next) {
   console.log("router");
   return res.sendFile(path.join(__dirname + '/template'));
 });
 
-//for updating data
 router.post('/signup', function (req, res, next){
   console.log(req.body);
   if (req.body.password!==req.body.passwordConf) {
@@ -21,49 +19,36 @@ router.post('/signup', function (req, res, next){
   }
   if (req.body.email && req.body.username && req.body.password && req.body.passwordConf){
     console.log("inside1");
-    // var userData={
+    var userData={
+      email: req.body.email,
+      username: req.body.username,
+      password: req.body.password,
+    }
+    User.create(userData, function(err, user){
+      console.log("in");
+      if(err){
+        console.log(err);
+        res.status(422).redirect('/signup.html')
+      }
+      else {
+        console.log("Created");
+        req.session.userId = user._id;
+        res.redirect('/login.html');
+      }
+    });
+    // let user=new User({
     //   email: req.body.email,
     //   username: req.body.username,
-    //   password: req.body.password,
-    // }
-    // User.create(userData, function(err, user){
-    //   console.log("in");
+    //   password: req.body.password
+    // });
+    // user.save(function(err){
     //   if(err){
     //     console.log(err);
     //     return next(err);
     //   }
-    //   else{
-    //     console.log("Created");
-    //     req.session.userId = user._id;
-    //     return res.redirect('../template/login.html');
-    //   }
-    // });
-    let user=new User({
-      email: req.body.email,
-      username: req.body.username,
-      password: req.body.password
-    });
-    user.save(function(err){
-      if(err){
-        console.log(err);
-        return next(err);
-      }
-      res.send("User Created");
-    })
-  } 
-  // else if(req.body.logemail && req.body.logpassword){
-  //   User.authenticate(req.body.logemail, req.body.logpassword, function (error, user){
-  //     if(error || !user){
-  //       var err=new Error('Wrong email or password.');
-  //       err.status=401;
-  //       return next(err);
-  //     } 
-  //     else{
-  //       req.session.userId = user._id;
-  //       return res.redirect('/template/login.html');
-  //     }
-  //   });
-  // } 
+    //   res.send("User Created");
+    // })
+  }
   else {
     var err=new Error('All fields required.');
     err.status=400;
@@ -71,7 +56,6 @@ router.post('/signup', function (req, res, next){
   }
 })
 
-//GET route after registering
 router.get('/login', function(req, res, next){
   User.findById(req.session.userId)
     .exec(function (error, user){
@@ -87,7 +71,7 @@ router.get('/login', function(req, res, next){
           return next(err);
         }
         else{
-          return res.redirect('../template/index.html');
+          return res.redirect('/index.html');
         }
       }
     });
@@ -100,7 +84,7 @@ router.get('/logout', function (req, res, next) {
         return next(err);
       }
       else{
-        return res.redirect('../template/login.html');
+        return res.redirect('/login.html');
       }
     });
   }
@@ -114,18 +98,14 @@ var io = require('socket.io').listen(app);
 
 var files = new static.Server('./public');
 
-// serve files on request
 function handler(request, response) {
 	request.addListener('end', function() {
 		files.serve(request, response);
 	});
 }
 
-// listen for incoming connections from client
 io.sockets.on('connection', function (socket){
-  // start listening for coords
   socket.on('send:coords', function (data){
-  	// broadcast your coordinates to everyone except you
   	socket.broadcast.emit('load:coords', data);
   });
 });

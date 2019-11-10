@@ -22,6 +22,12 @@ app.use(session({
   })
 }));
 
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
+
 //parse incoming requests
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
